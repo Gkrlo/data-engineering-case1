@@ -1,0 +1,30 @@
+- name: PostgreSQL | Enable Postgres
+  command: "amazon-linux-extras enable postgresql10"
+
+- name: PostgreSQL | Enable Postgres
+  command: "yum install -y postgresql-server postgresql-devel"
+
+- name: PostgreSQL | Adding repo
+  command: "/usr/bin/postgresql-setup initdb"
+  notify: restart postgresql
+  ignore_errors: yes
+
+- name: PostgreSQL | copy pg_hba.conf
+  copy: 
+    src: "pg_hba.conf"
+    dest: "/var/lib/pgsql/data"
+  become_user: postgres
+
+- name: PostgreSQL | copy postgresql.conf
+  copy: 
+    src: "postgresql.conf"
+    dest: "/var/lib/pgsql/data"
+  become_user: postgres
+
+- name: enable service httpd and ensure it is not masked
+  systemd:
+    name: postgresql
+    enabled: yes
+    masked: no
+  notify: restart postgresql
+

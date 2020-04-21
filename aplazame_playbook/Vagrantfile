@@ -1,0 +1,41 @@
+Vagrant.configure(2) do |config|
+
+  # Disable default secure-key
+  # config.ssh.username = "vagrant"
+  # config.ssh.password = "vagrant"
+  # config.ssh.insert_key = false
+
+  if Vagrant.has_plugin?("vagrant-hostmanager")
+    #https://github.com/devopsgroup-io/vagrant-hostmanager
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.manage_guest = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
+  end
+
+  config.vm.provider "virtualbox" do |virtualbox|
+    virtualbox.memory = 6144
+    virtualbox.cpus = 4
+  end
+
+  N=1
+  (1..N).each do |machine_id|
+    config.vm.define "aplazame#{machine_id}" do |infra|
+      infra.vm.box = "gbailey/amzn2"
+      infra.vm.hostname = "aplazame#{machine_id}.vm"
+      infra.vm.network "private_network", ip:"10.0.0.3#{machine_id}"
+
+      if machine_id == N
+        infra.vm.provision :ansible do |ansible|
+          ansible.limit = "all"
+          ansible.playbook = "infrastructure.yml"
+          #ansible.playbook = "deploy_jobs.yml"
+          ansible.inventory_path = "inventory/local"
+          ansible.become = true
+          ansible.verbose = "v"
+        end
+      end
+    end
+  end
+end

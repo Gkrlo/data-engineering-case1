@@ -1,0 +1,6 @@
+---
+airflow_user: airflow
+airflow_group: airflow
+airflow_dags_dir: /opt/airflow/dags
+aplazame_jars: /opt/aplazame_jars
+test_data_dir: /opt/aplazame_data

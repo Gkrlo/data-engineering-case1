@@ -1,0 +1,44 @@
+---
+- name: Airflow | Initializing DB
+  command: "{{ airflow_executable }} initdb"
+  environment:
+    AIRFLOW_HOME: "{{ airflow_home }}"
+  become: true
+  become_user: "{{ airflow_user }}"
+  notify: restart {{ item }}
+  with_items: "{{ airflow_services }}"
+
+- name: Airflow | set environment vars
+  lineinfile:
+    path: "/etc/environment"
+    regexp: "{{item['name']}}"
+    line: "{{ item['name']+item['value'] }}"
+  with_items: "{{ airflow_environment_vars }}"
+
+- name: Airflow | set configuration vars
+  lineinfile:
+    path: "{{ airflow_home }}/airflow.cfg"
+    regexp: "{{item['name']}}"
+    line: "{{ item['name']+item['value'] }}"
+  with_items: "{{ airflow_configuration_vars }}"
+
+- name: Airflow | Ensure system folder exists
+  file:
+    path: "/lib/systemd/system"
+    state: directory
+
+- name: Airflow | Copy Daemon scripts
+  template:
+    src: "{{ item }}.service.j2"
+    dest: /lib/systemd/system/{{ item }}.service
+    mode: 0644
+  notify: restart {{ item }}
+  with_items: "{{ airflow_services }}"
+
+- name: Airflow | Configuring service
+  systemd:
+    name: "{{ item }}"
+    state: "started"
+    enabled: "yes"
+    daemon_reload: yes
+  with_items: "{{ airflow_services }}"

@@ -1,0 +1,9 @@
+---
+- hosts: infra_nodes
+  become: yes
+  roles:
+    - postgresql
+    - airflow
+    - spark
+    - deploy_jobs
+

@@ -1,0 +1,61 @@
+---
+- name: Airflow | Ensure Airflow group
+  group:
+    name: "{{ airflow_group }}"
+
+- name: Airflow | Ensure Airflow user
+  user:
+    name: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+    state: present
+    shell: /bin/bash
+
+- name: Airflow | Create path airflow home
+  file:
+    path: "{{ airflow_home }}"
+    state: directory
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+
+- name: Airflow | Create logs folder
+  file:
+    path: "{{ airflow_logs_folder }}"
+    state: directory
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+
+- name: Airflow | Create dags folder
+  file:
+    path: "{{ airflow_dags_folder }}"
+    state: directory
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+
+- name: Airflow | Create path for PID files
+  file:
+    path: "{{ airflow_home }}"
+    state: directory
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+
+- name: Airflow | Install airflow
+  pip: 
+    executable: "{{ pip_executable }}"
+    name: apache-airflow
+    version: "{{ airflow_version }}"
+    extra_args: --no-cache-dir
+  become: yes
+  register: airflow_install
+
+- name: Airflow | Install extensions
+  pip:
+    executable: "{{ pip_executable }}"
+    name: "{{ item }}"
+  with_items: "{{ airflow_extra_packages }}"
+
+- name: Airflow | Copy Environment File
+  template:
+    src: airflow-setenv.conf.j2
+    dest: "{{ airflow_home }}/airflow-setenv.conf"
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"

@@ -1,0 +1,31 @@
+---
+# Required packages, libs, etc
+- name: Requirements | Install some packages
+  yum:
+    name: '{{ spark_linux_packages }}'
+    state: present
+    update_cache: yes
+  tags:
+    - requirements
+
+# Networking
+- name: Requirements | Remove similar IPs in hosts file
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "^{{ item['ip'] }}"
+    state: absent
+  with_items: "{{ spark_masters }} + {{ spark_workers }}"
+  tags:
+    - requirements
+
+- name: Requirements | Add host in hosts file
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ item['ip'] }} {{ item['host'] }}"
+    insertafter: EOF
+    state: present
+  with_items: "{{ spark_masters }} + {{ spark_workers }}"
+  tags:
+    - requirements
+
+

@@ -1,0 +1,40 @@
+---
+# Config Spark cluster
+- name: Spark | set environment vars
+  lineinfile:
+    path: "/etc/environment"
+    regexp: "{{item['name']}}"
+    line: "{{ item['name']+item['value'] }}"
+  with_items: "{{ spark_environment_vars }}"
+
+- name: Spark | Create slaves file
+  template:
+    src: slaves.j2
+    dest: "{{ spark_home_dir }}/conf/slaves"
+    force: yes
+  notify:
+    - restart spark worker
+    - restart spark master
+    - restart history server
+
+- name: Spark | Create spark-env
+  template: 
+    src: spark-env.sh.j2
+    dest: "{{ spark_home_dir }}/conf/spark-env.sh"
+    force: yes
+  notify:
+    - restart spark worker
+    - restart spark master
+    - restart history server
+
+- name: Spark | create metric.properties
+  template:
+    src: metrics.properties.j2
+    dest: "{{ spark_home_dir }}/conf/metrics.properties"
+    force: yes
+  notify:
+    - restart spark worker
+    - restart spark master
+    - restart history server
+
+

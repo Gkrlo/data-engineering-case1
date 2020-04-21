@@ -1,0 +1,35 @@
+---
+- name: Deploy jobs | Ensure dag folder exists
+  file:
+    path: "{{ airflow_dags_dir }}"
+    state: directory
+
+- name: Deploy Jobs | deploy dags
+  copy:
+    src: "dags/"
+    dest: "{{ airflow_dags_dir }}"
+
+- name: Deploy Jobs | deploy dags
+  copy:
+      src: "aplazame_etls"
+      dest: "{{ airflow_dags_dir }}"
+
+- name: Deploy jobs | Ensure aplazame jars folder exists
+  file:
+    path: "{{ aplazame_jars }}"
+    state: directory
+  
+- name: Deploy jobs | deploy aplazame jars
+  copy:
+    src: "jars/"
+    dest: "{{ aplazame_jars }}"
+
+- name: Deploy jobs | Ensure test data folder exists
+  file:
+    path: "{{ test_data_dir }}"
+    state: directory
+
+- name: Deploy Jobs | deploy test data
+  copy: 
+    src: "test_data/"
+    dest: "{{ test_data_dir }}"

@@ -1,0 +1,40 @@
+---
+# GENERAL
+pip_executable: /usr/local/bin/pip3
+airflow_version: 1.10.3
+airflow_executable: "/usr/local/bin/airflow"
+airflow_user: vagrant
+airflow_group: vagrant
+airflow_home: /opt/airflow
+airflow_dags_folder: /opt/airflow/dags
+airflow_logs_folder: /opt/airflow/logs
+airflow_wbserver_port: 8080
+airflow_scheduler_runs: 5
+airflow_services:
+  - airflow-webserver
+  - airflow-scheduler
+
+# CONFIGURATION VARIABLES
+airflow_configuration_vars:
+    # general
+  - { name: "airflow_home = ", value: "{{ airflow_home }}"}
+  - { name: "base_log_folder = ", value: "{{ airflow_logs_folder }}" }
+  - { name: "load_examples = ", value: "False" }
+    # mailing 
+  - { name: "smtp_host = ", value: "" }
+  - { name: "smtp_user = ",  value: "" }
+  - { name: "smtp_password = ", value: "" }
+  - { name: "smtp_mail_from = ", value: "" }
+
+# ENVIRONMENT VARIABLES
+airflow_environment_vars:
+ - { name: AIRFLOW_HOME=, value: "{{ airflow_home }}" }
+ - { name: SPARK_HOME=, value: "/opt/spark"}
+ - { name: SPARK_JOBS=, value: "/opt/spark_jobs"}
+ - { name: PYTHON_JOBS=,  value: "/opt/python_scripts" }
+ 
+
+# EXTRA PACKAGES
+airflow_extra_packages:
+#  - apache-airflow[s3]
+#  - apache-airflow[jdbc]

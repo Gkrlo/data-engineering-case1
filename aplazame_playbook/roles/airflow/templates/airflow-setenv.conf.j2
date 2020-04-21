@@ -1,0 +1,3 @@
+{% for env_var in airflow_environment_vars %}
+{{ env_var.name }}{{ env_var.value }}
+{% endfor %}

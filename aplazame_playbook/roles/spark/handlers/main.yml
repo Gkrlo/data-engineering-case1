@@ -1,0 +1,49 @@
+# Restart the spark daemons
+- name: restart spark worker
+  shell: "./stop-slave.sh"
+  become: yes
+  ignore_errors: yes
+  args:
+    chdir: "{{ spark_home_dir }}/sbin"
+  when: ansible_all_ipv4_addresses | intersect( spark_workers | map(attribute='ip') | list ) | length > 0
+  notify: start spark worker
+        
+- name: restart spark master
+  shell: "./stop-master.sh"
+  become: yes
+  ignore_errors: yes
+  args:
+    chdir: "{{ spark_home_dir }}/sbin"
+  when: ansible_all_ipv4_addresses | intersect( spark_masters | map(attribute='ip') | list ) | length > 0
+  notify: start spark master
+
+- name: restart history server
+  shell: "./stop-history-server.sh"
+  become: yes
+  ignore_errors: yes
+  args:
+    chdir: "{{ spark_home_dir }}/sbin"
+  when: ansible_all_ipv4_addresses | intersect( spark_history_server | map(attribute='ip') | list ) | length > 0
+  notify: start history server
+
+- name: start spark master
+  shell: "./start-master.sh"
+  become: yes
+  args:
+    chdir: "{{ spark_home_dir }}/sbin"
+  when: ansible_all_ipv4_addresses | intersect( spark_masters | map(attribute='ip') | list ) | length > 0
+
+- name: start spark worker
+  shell: "./start-slave.sh spark://{{ spark_masters | map(attribute='ip') | first }}:7077"
+  become: yes
+  args:
+    chdir: "{{ spark_home_dir }}/sbin"
+  when: ansible_all_ipv4_addresses | intersect( spark_workers | map(attribute='ip') | list ) | length > 0
+
+- name: start history server
+  shell: "./start-history-server.sh"
+  become: yes
+  ignore_errors: yes
+  args:
+    chdir: "{{ spark_home_dir }}/sbin"
+  when: ansible_all_ipv4_addresses | intersect( spark_history_server | map(attribute='ip') | list ) | length > 0

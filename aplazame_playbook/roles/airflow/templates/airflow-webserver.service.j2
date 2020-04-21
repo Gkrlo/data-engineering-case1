@@ -1,0 +1,19 @@
+[Unit]
+Description=Airflow webserver daemon
+After=network.target postgresql.service mysql.service redis.service rabbitmq-server.service
+Wants=postgresql.service mysql.service redis.service rabbitmq-server.service
+
+[Service]
+EnvironmentFile={{ airflow_home }}/airflow-setenv.conf
+PIDFile={{ airflow_home }}/webserver.pid
+User={{ airflow_user }}
+Group={{ airflow_group }}
+Type=simple
+ExecStart={{ airflow_executable }} webserver --pid {{ airflow_home }}/webserver.pid
+Restart=on-failure
+RestartSec=5s
+PrivateTmp=true
+RuntimeDirectory=airflow
+
+[Install]
+WantedBy=multi-user.target

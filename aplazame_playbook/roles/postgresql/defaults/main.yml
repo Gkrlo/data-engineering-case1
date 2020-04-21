@@ -1,0 +1,4 @@
+# REQUIREMENTS
+pg_linux_packages: 
+  - postgresql-server
+  - postgresql-devel

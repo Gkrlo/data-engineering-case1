@@ -1,0 +1,12 @@
+---
+- name: Airflow | Requirements
+  include_tasks: requirements.yml
+
+- name: Airflow | Install
+  include_tasks: install.yml
+
+- name: Airflow | Config
+  include_tasks: config.yml
+
+- name: Airflow | Service
+  include_tasks: service.yml

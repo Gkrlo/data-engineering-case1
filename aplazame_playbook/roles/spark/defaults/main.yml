@@ -1,0 +1,18 @@
+---
+#Spark hosts
+spark_masters:
+   - { host: "aplazame1.vm" ,ip: "10.0.0.31" }
+  
+spark_workers: 
+   - { host: "aplazame1.vm" ,ip: "10.0.0.31" }
+
+spark_history_server:
+   - { host: "aplazame1.vm" ,ip: "10.0.0.31" }
+
+spark_download_dir: /opt/download
+spark_version: 2.3.4
+hadoop_version: 2.7
+spark_master_webui_port: 9090
+spark_worker_webui_port: 9091
+
+

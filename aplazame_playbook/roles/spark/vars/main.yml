@@ -1,0 +1,17 @@
+---
+# GENERAL
+hadoop_home: "{{ base_app_dir }}/hadoop-{{ hadoop_version }}"
+spark_download_url: "https://archive.apache.org/dist/spark/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-hadoop{{ hadoop_version }}.tgz"
+spark_home_dir: /opt/spark
+spark_local_dir: /opt/spark-data
+
+# REQUIREMENTS
+spark_linux_packages:
+  - unzip
+  - tar
+  - java-1.8.0-openjdk-devel.x86_64
+
+# ENVIRONMENT VARIABLES
+spark_environment_vars:
+ - { name: JAVA_HOME=, value: "/usr/lib/jvm/java-1.8.0-openjdk" }
+ - { name: SPARK_HOME=, value: "{{ spark_home_dir }}" }

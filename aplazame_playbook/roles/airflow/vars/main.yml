@@ -1,0 +1,15 @@
+---
+# REQUIREMENTS
+airflow_linux_packages:
+  - python3-devel.x86_64
+  - gcc-c++ 
+
+pip_version: 19.1.1
+  
+pip_packages:
+  - { name: setuptools, version: 41.0.1 }
+  - { name: cryptography, version: 2.3 }
+  - { name: six, version: 1.11.0 }
+  - { name: Flask, version: 1.0.4 }
+  - { name: pandas, version: 0.24.2 }
+  - { name: psycopg2-binary, version: 2.8.5 }

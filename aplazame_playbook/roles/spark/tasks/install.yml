@@ -1,0 +1,58 @@
+---
+# Download (only if not downloaded yet) & Install
+- name: Create if not exist download dir
+  file:
+    path: "{{ spark_download_dir }}"
+    state: directory
+
+- name: Spark | Verify tar.gz is already downloaded
+  stat:
+    path: "{{ spark_download_dir }}/spark-{{ spark_version }}-bin-hadoop{{ hadoop_version }}.tgz"
+  register: st_spark_downloaded
+
+- name: Spark | Download folder
+  get_url:
+    url: "{{ spark_download_url }}"
+    dest: "{{ spark_download_dir }}"
+    remote_src: yes
+    validate_certs: no
+  when: st_spark_downloaded.stat.exists == False
+
+- name: Spark | Unzip spark package
+  unarchive:
+    src: "{{ spark_download_dir }}/spark-{{ spark_version }}-bin-hadoop{{ hadoop_version }}.tgz"
+    dest: "{{ spark_download_dir }}"
+    copy: no
+
+- name: Spark | Delete if exist download dir
+  file:
+    path: "{{ spark_home_dir }}"
+    state: absent
+
+- name: Spark | Create Spark Home folder
+  command: "mv {{ spark_download_dir }}/spark-{{ spark_version }}-bin-hadoop{{ hadoop_version }} {{ spark_home_dir }}"
+
+- name: Spark | Ensure owner/group spark home folder
+  file:
+    path: "{{ spark_home_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Spark | Ensure /tmp/spark-events folder
+  file:
+    path: "/tmp/spark-events"
+    state: directory
+    recurse: yes
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Spark | Ensure data_dir is created
+  file:
+    path: "{{ spark_local_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
