@@ -1,4 +1,4 @@
-# Aplazame Assignment
+# Case
 
 ## Objectives
 Extract a JSON file, apply some transformations and store the data in a RDB (PostGreSQL)
